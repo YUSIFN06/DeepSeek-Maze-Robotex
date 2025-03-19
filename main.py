@@ -1,22 +1,110 @@
-from time import sleep
-
-from MotorControl import MotorControl
+from robot import Robot
+from factory import MazeSolverFactory
 
 enable_pins = [17, 16]
 motor_pins = [19, 18, 5, 4]
+sensor_pins = [26, 27, 32]
 
-robot = MotorControl(enable_pins, motor_pins, speed=40000)
+robot = Robot(enable_pins, motor_pins, sensor_pins)
 
-robot.forward()
-sleep(2)
+selected_algorithm = "dfs"
 
-robot.turnRight()
-sleep(1)
+solver = MazeSolverFactory.get_solver(selected_algorithm)
+if solver:
+    robot.execute_algorithm(solver)
+else:
+    print("Wrong Algorithm!")
 
-robot.turnLeft()
-sleep(1)
 
-robot.turnBack()
-sleep(2)
 
-robot.stop()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# from time import sleep
+#
+# from MotorControl import MotorControl
+#
+# enable_pins = [17, 16]
+# motor_pins = [19, 18, 5, 4]
+#
+# robot = MotorControl(enable_pins, motor_pins, speed=40000)
+#
+# robot.forward()
+# sleep(2)
+#
+# robot.turnRight()
+# sleep(1)
+#
+# robot.turnLeft()
+# sleep(1)
+#
+# robot.turnBack()
+# sleep(2)
+#
+# robot.stop()
