@@ -66,11 +66,9 @@
 
 <ul>
   <li>🔹 <strong>Right-Hand Rule</strong> – Simple but not always optimal.</li>
-  <li>🔹 <strong>Left-Hand Rule</strong> – Opposite of right-hand rule.</li>
   <li>🔹 <strong>DFS (Depth-First Search)</strong> – Guarantees a solution but may not find the shortest path.</li>
   <li>🔹 <strong>BFS (Breadth-First Search)</strong> – Ensures shortest path but is computationally expensive.</li>
   <li>🔹 <strong>A* (A-Star) Algorithm</strong> – Finds the most optimal path.</li>
-  <li>🔹 <strong>Flood-Fill Algorithm</strong> – Maps the maze and determines the best route.</li>
 </ul>
 
 <hr>
@@ -102,14 +100,8 @@ mpremote run main.py
 <h2>📂 Project Structure</h2>
 <pre>
 /robot_project
-│── main.py              # Main control file
-│── robot.py             # Robot movement control
-│── motor_control.py     # Motor control logic
-│── sensors.py           # Sensor data handling
-│── algorithms.py        # Maze-solving algorithms
-│── strategy.py          # Algorithm selection system
-│── factory.py           # Algorithm factory
-│── config.py            # Configuration settings
+│── main.py              # Main control file and Algortihms
+│── motor_control.py     # Motor and IR sensors control logics
 </pre>
 
 <hr>
