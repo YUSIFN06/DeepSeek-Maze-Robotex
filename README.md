@@ -18,7 +18,7 @@
 
 <ul>
   <li>✅ <strong>Autonomous Maze Solving</strong> – The robot finds its way out without user intervention.</li>
-  <li>✅ <strong>Multiple Algorithms Supported</strong> – Right-Hand Rule, DFS, BFS, A*, and Flood-Fill.</li>
+  <li>✅ <strong>Multiple Algorithms Supported</strong> – Right-Hand Rule, DFS, BFS, A*, etc.</li>
   <li>✅ <strong>MicroPython-Based Control</strong> – Lightweight, low-power embedded software.</li>
   <li>✅ <strong>Mapping & Optimization</strong> – The robot can store and analyze its surroundings.</li>
 </ul>
