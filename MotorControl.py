@@ -29,7 +29,7 @@ class MotorControl():
         self.right_motor_backward.value(0)
 
     def stop(self):
-        self.left_motor_forward.value(0)
+        self.left_motor_forward.value(0)#
         self.left_motor_backward.value(0)
         self.right_motor_forward.value(0)
         self.right_motor_backward.value(0)
