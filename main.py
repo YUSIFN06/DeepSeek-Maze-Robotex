@@ -2,8 +2,7 @@ from machine import Pin, PWM, Timer
 import time, machine
 import heapq
 
-row, col = 33
-, 33
+row, col = 33, 33
 start = (31, 1)
 end = (row // 2, col // 2)
 mapCreated = False
@@ -24,9 +23,11 @@ def right_hand_rule():
         sensors = robot.read_sensors()
 
         if sensors["right"] == 1:
+            robot.stop()
             robot.turnRight()
             time.sleep(0.5)
         elif sensors["front"] == 1:
+            robot.stop()
             robot.turnLeft()
             time.sleep(0.5)
         else:
@@ -73,14 +74,18 @@ class MotorIRControl():
             self.right_motor_enable_pin.duty_u16(self.speed)
             self.left_motor_enable_pin.duty_u16(self.speed)
 
-    def move(self, left_dir, right_dir, stop = False):
+    def move(self, left_dir, right_dir, stop = False, time):
         self.update_speed(stop)
         self.left_motor_forward.value(left_dir[0])
         self.left_motor_backward.value(left_dir[1])
         self.right_motor_forward.value(right_dir[0])
         self.right_motor_backward.value(right_dir[1])
+        time.sleep(time)
 
     def forward(self):
+        self.move((1, 0), (1, 0), time)
+        
+    def forward45(self):
         self.move((1, 0), (1, 0))
 
     def stop(self):
@@ -119,6 +124,7 @@ def map_create():
     visited = set()
     path = []
     steps = 0
+    turns = []
     
     maze[row_pos][col_pos] = 0
     
@@ -143,7 +149,7 @@ def map_create():
         row_pos, col_pos = current
 
         sensors = robot.read_sensors()
-        available_moves = []
+        available_moves = [] # For saving the number of ways to go (eger dongede birden cox gedis yolu olsa yadda saxlamaga)
 
         if sensors["left"] == 1 and (row_pos, col_pos - 1) not in visited:
             row_up = False
@@ -154,8 +160,9 @@ def map_create():
             FirstTurnLeft = 1
             if FirstTurnLeft == 1 and FirstTurnRight == 0:
                 start = (row - 2, col - 2)
-            for i in range(steps):
-                maze[row - 2 - i, col - 2] = 0
+                for i in range(steps):
+                    maze[row - 2 - i, col - 2] = 0
+                FirstTurnLeft =  3
 
         if sensors["right"] == 1 and (row_pos, col_pos + 1) not in visited:
             row_up = False
@@ -166,8 +173,9 @@ def map_create():
             FirstTurnRight = 1
             if FirstTurnLeft == 0 and FirstTurnRight == 1:
                 start = (row - 2, 1)
-            for i in range(steps):
-                maze[row - 2 - i, 1] = 0
+                for i in range(steps):
+                    maze[row - 2 - i, 1] = 0
+                FirstTurnRight =  3
                 
         if sensors["front"] == 1 and (row_pos - 1, col_pos) not in visited:
             row_up = True
@@ -175,7 +183,13 @@ def map_create():
             col_right = False
             col_left = False
             available_moves.append((row_up, (row_pos - 1, col_pos)))
-            steps = steps + 1
+            # How many steps until finding the first turn
+            if FirstTurnLeft == 0 or FirstTurnRight == 0:
+                steps = steps + 1
+                
+        elif sensors["front"] == 0 or len(available_moves) != 1:
+            robot.forward45()
+            robot.stop()
         
         for move in available_moves:
             stack.append(move[1])
@@ -192,12 +206,15 @@ def map_create():
                 robot.turnLeft()
                 robot.forward()
                 maze[row_pos][col_pos] = 0
+                turns.append((row_pos, col_pos + 1))
             elif direction == col_right:
                 robot.turnRight()
                 robot.forward()
                 maze[row_pos][col_pos] = 0
+                turns.append((row_pos, col_pos - 1))
 
         else:
+            # Dead end olanda sadece tam deyil bura aid ne fikir olsa deyersiniz. Dead end olanda en son yere qayitma isi ile elaqeli
             if stack:
                 robot.turnBack()
                 back_pos = stack[-1]
