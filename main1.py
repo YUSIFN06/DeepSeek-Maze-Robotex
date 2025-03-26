@@ -137,6 +137,10 @@ def map_create():
         if (row_pos, col_pos) in visited:
             continue
         
+        if maze[row // 2][col // 2] == 0:
+            mapCreated = True
+            break
+        
         visited.add((row_pos, col_pos))
         path.append((row_pos, col_pos))
         
@@ -355,3 +359,6 @@ def astar(start, goal, maze):
                     heapq.heappush(open_list, (f_score[neighbor], neighbor))
     
     return None
+
+def path_find(maze):
+    
