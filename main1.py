@@ -4,7 +4,7 @@ import heapq
 
 row, col = 33, 33
 start = (31, 1)
-end = (row // 2, col // 2)
+goal = (row // 2, col // 2)
 mapCreated = False
 PathFinding = False
 maze = []
@@ -117,6 +117,7 @@ DOWN = 2
 LEFT = 3
 
 def map_create():
+    global start
     row_pos = row - 2
     col_pos = 1
     current_direction = UP
@@ -170,7 +171,7 @@ def map_create():
             if FirstTurnRight > 1:
                 FirstTurnRight =  3
             if FirstTurnLeft == 0 and FirstTurnRight == 1:
-                global start = (row - 2, 1)
+                start = (row - 2, 1)
                 for i in range(steps):
                     maze[row - 2 - i, 1] = 0
             steps = 0
@@ -188,7 +189,7 @@ def map_create():
             if FirstTurnLeft > 1:
                 FirstTurnLeft =  3
             if FirstTurnLeft == 1 and FirstTurnRight == 0:
-                global start = (row - 2, col - 2)
+                start = (row - 2, col - 2)
                 for i in range(steps):
                     maze[row - 2 - i, col - 2] = 0
             steps = 0
@@ -311,7 +312,7 @@ def map_create():
 def heuristic(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
-def astar(maze):
+def astar(start, goal, maze):
     DIRECTIONS = [(0, 1), (0, -1), (1, 0), (-1, 0)]
     open_list = []
     closed_list = set()
