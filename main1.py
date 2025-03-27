@@ -99,6 +99,9 @@ class MotorIRControl():
 
     def turnBack(self):
         self.move((0, 1), (1, 0))
+    
+    def moveBack45(self):
+        self.move((0, 1), (0, 1))
 
     def setSpeed(self, new_speed):
         self.speed = new_speed
@@ -134,21 +137,18 @@ def map_create():
     while stack:
         row_pos, col_pos = stack.pop()
         
-        if (row_pos, col_pos) in visited:
-            continue
+#         if (row_pos, col_pos) in visited:
+#             continue
         
         if maze[row // 2][col // 2] == 0:
             mapCreated = True
-            break
-        
+
         visited.add((row_pos, col_pos))
         path.append((row_pos, col_pos))
         
         sensors = robot.read_sensors()
         available_moves = []
         
-        # Mark the current position as open
-        maze[row_pos][col_pos] = 0
         
         # Add available moves based on sensor data and current direction
         if sensors["front"] == 1:
@@ -160,7 +160,8 @@ def map_create():
                 available_moves.append((DOWN, (row_pos + 1, col_pos)))
             elif current_direction == LEFT and (row_pos, col_pos - 1) not in visited:
                 available_moves.append((LEFT, (row_pos, col_pos - 1)))
-            steps = steps + 1
+            if FirstTurnLeft == 0 and FirstTurnRight == 0:
+                steps = steps + 1
             
         if sensors["right"] == 1:
             FirstTurnRight = FirstTurnRight + 1
@@ -210,12 +211,15 @@ def map_create():
                     if current_direction == LEFT:
                         robot.forward45()
                         robot.turnRight()
+                        robot.forward45()
                         turns.append((row_posp, col_posp), LEFT)
                     elif current_direction == RIGHT:
                         robot.forward45()
                         robot.turnLeft()
+                        robot.forward45()
                         turns.append((row_posp, col_posp), RIGHT)
-                robot.forward()
+                else:
+                    robot.forward()
                 current_direction = UP
 
             elif direction == RIGHT:
@@ -223,12 +227,15 @@ def map_create():
                     if current_direction == UP:
                         robot.forward45()
                         robot.turnRight()
+                        robot.forward45()
                         turns.append((row_posp, col_posp), UP)
                     elif current_direction == DOWN:
                         robot.forward45()
                         robot.turnLeft()
+                        robot.forward45()
                         turns.append((row_posp, col_posp), DOWN)
-                robot.forward()
+                else:
+                    robot.forward()
                 current_direction = RIGHT
 
             elif direction == DOWN:
@@ -236,13 +243,15 @@ def map_create():
                     if current_direction == RIGHT:
                         robot.forward45()
                         robot.turnRight()
+                        robot.forward45()
                         turns.append((row_posp, col_posp), RIGHT)
                     elif current_direction == LEFT:
                         robot.forward45()
                         robot.turnLeft()
+                        robot.forward45()
                         turns.append((row_posp, col_posp), LEFT)
-                    
-                robot.forward()
+                else:    
+                    robot.forward()
                 current_direction = DOWN
 
             elif direction == LEFT:
@@ -250,12 +259,15 @@ def map_create():
                     if current_direction == UP:
                         robot.forward45()
                         robot.turnLeft()
+                        robot.forward45()
                         turns.append((row_posp, col_posp), UP)
                     elif current_direction == DOWN:
                         robot.forward45()
                         robot.turnRight()
+                        robot.forward45()
                         turns.append((row_posp, col_posp), DOWN)
-                robot.forward()
+                else:
+                    robot.forward()
                 current_direction = LEFT
                 
             maze[row_pos][col_pos] = 0
@@ -280,13 +292,14 @@ def map_create():
                     while current_direction != RIGHT:
                         robot.turnRight()
                         current_direction = (current_direction + 1) % 4
-                
+                        
                 row_pos, col_pos = back_pos
+                stack.append((row_pos, col_pos))
                 steps = abs(back_pos[0] - row_pos) + abs(back_pos[1] - col_pos)
-                for i in range(steps):
+                for i in range(steps - 2):
                     robot.forward()
-                    robot.forward45()
-                    robot.stop()
+                robot.forward45()
+                robot.stop()
                 if direction == UP:
                     if current_direction == LEFT:
                         robot.turnRight()
@@ -307,8 +320,11 @@ def map_create():
                         robot.turnLeft()
                     elif current_direction == DOWN:
                         robot.turnRight()
+                robot.moveBack45()
+                current_direction = direction
                         
             else:
+                mapCreated = True
                 break
 
     return maze
