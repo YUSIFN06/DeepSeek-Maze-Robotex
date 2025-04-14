@@ -91,20 +91,15 @@ def right_hand_rule():
         sensors = robot.read_sensors()
 
         if sensors["right"] == 1:
-            robot.stop()
             robot.turnRight()
-            time.sleep(0.5)
         elif sensors["front"] == 1:
-            robot.stop()
             robot.turnLeft()
-            time.sleep(0.5)
         else:
             robot.forward()
-            time.sleep(0.5)
         
 enable_pins = [21, 15]
 motor_pins = [16, 4, 5, 19]
-sensor_pins = [32, 26, 12]
+sensor_pins = [32, 26, 12] 
 
 robot = MotorIRControl(enable_pins, motor_pins, sensor_pins, speed = 32767)
 
@@ -264,19 +259,39 @@ def map_create():
         else:
             # Backtracking when no moves are available
             if turns:
-                back_pos, direction = turns[-1]
-                if back_pos[0] < row_pos:
-                    robot.turnBack()
-                    current_direction = UP
-                elif back_pos[0] > row_pos:
-                    robot.turnBack()
-                    current_direction = DOWN
-                elif back_pos[1] < col_pos:
-                    robot.turnBack()
+                back_pos, direction = turns.pop()
+                if back_pos[1] < col_pos:
+                    if current_direction == RIGHT:
+                        robot.turnBack()
+                    elif curren_direction == UP:
+                        robot.turnLeft
+                    elif current_direction == DOWN:
+                        robot.turnRight()
                     current_direction = LEFT
                 elif back_pos[1] > col_pos:
-                    robot.turnBack()
-                    current_direction = RIGHT
+                    if current_direction == LEFT:
+                        robot.turnBack()
+                    elif current_direction == UP:
+                        robot.turnRight()
+                    elif current_direction == DOWN:
+                        robot.turnLeft()
+                    current_direction = RIGH
+                elif back_pos[0] < row_pos:
+                    if current_direction == RIGHT:
+                        robot.turnLeft()
+                    elif current_direction == LEFT:
+                        robot.turnRight()
+                    elif current_direction == DOWN:
+                        robot.turnBack()
+                    current_direction = UP
+                elif back_pos[0] > row_pos:
+                    if current_direction == RIGHT:
+                        robot.turnRight()
+                    elif current_direction == LEFT:
+                        robot.turnLeft()
+                    elif current_direction == UP:
+                        robot.turnBack()
+                    current_direction = DOWN
                         
                 steps = abs(back_pos[0] - row_pos) + abs(back_pos[1] - col_pos)
                 row_pos, col_pos = back_pos
@@ -296,14 +311,14 @@ def map_create():
                         robot.turnRight()
                 if direction == LEFT:
                     if current_direction == UP:
-                        robot.turnRight()
-                    elif current_direction == DOWN:
                         robot.turnLeft()
+                    elif current_direction == DOWN:
+                        robot.turnRight()
                 if direction == RIGHT:
                     if current_direction == UP:
-                        robot.turnLeft()
-                    elif current_direction == DOWN:
                         robot.turnRight()
+                    elif current_direction == DOWN:
+                        robot.turnLeft()
                 current_direction = direction
                         
             else:
